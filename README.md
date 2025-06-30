@@ -1,7 +1,7 @@
-# 💧 AquaGuard: A Solução Inteligente para o Monitoramento de Água
+# 💧 AquaGuard: Monitoramento de Água Inteligente
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/gabrielbmonteiro/AquaGuard/main/assets/aquaguard-logo.png" alt="AquaGuard Logo" width="150"/>
+  <img src="https://github.com/gabrielbmonteiro/AquaGuard/blob/main/assests/aquaguard-logo.png" alt="AquaGuard Logo" width="500"/>
 </p>
 
 <p align="center">
