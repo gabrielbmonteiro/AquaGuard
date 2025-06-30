@@ -1,0 +1,14 @@
+spring:
+  application:
+      name: api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/aquaguard_api
+    username: root
+    password: 0w`eW=4`*j/`2>+3EDYlRE/
+
+
+api:
+  security:
+      token:
+          secret: 0w`eW=4`*j/`2>+3EDYlRE/
