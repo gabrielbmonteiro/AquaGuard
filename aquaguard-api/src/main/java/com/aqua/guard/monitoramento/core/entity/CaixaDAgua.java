@@ -1,7 +1,6 @@
 package com.aqua.guard.monitoramento.core.entity;
 
 import com.aqua.guard.monitoramento.api.v1.dto.DadosAtualizacaoCaixaDAgua;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosCadastroCaixaDAgua;
 import com.aqua.guard.monitoramento.api.v1.dto.DadosPareamentoDispositivo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
