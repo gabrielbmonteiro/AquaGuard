@@ -84,6 +84,7 @@ A API estará disponível em `http://localhost:8080`.
 | `DELETE` | `/api/users/me` | Desativa a conta do usuário logado. | Usuário (JWT) |
 | `POST` | `/caixas-dagua/parear-dispositivo` | Associa um novo dispositivo a uma caixa d'água. | Usuário (JWT) |
 | `GET` | `/caixas-dagua` | Lista todas as caixas d'água do usuário. | Usuário (JWT) |
+| `GET` | `/caixas-dagua/{id}` | Retorna os dados detalhados de uma caixa d'água. | Usuário (JWT)
 | `GET` | `/caixas-dagua/{id}/analise` | Retorna os dados históricos e KPIs para análise. | Usuário (JWT) |
 | `PUT` | `/caixas-dagua/{id}` | Atualiza as informações de uma caixa d'água. | Usuário (JWT) |
 | `DELETE` | `/caixas-dagua/{id}` | Desativa uma caixa d'água. | Usuário (JWT) |
