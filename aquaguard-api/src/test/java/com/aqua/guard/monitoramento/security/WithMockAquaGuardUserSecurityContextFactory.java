@@ -1,7 +1,7 @@
 package com.aqua.guard.monitoramento.security;
 
 import com.aqua.guard.monitoramento.core.entity.Usuario;
-import com.aqua.guard.monitoramento.core.integration.persistence.UsuarioRepository;
+import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -14,13 +14,13 @@ public class WithMockAquaGuardUserSecurityContextFactory
         implements WithSecurityContextFactory<WithMockAquaGuardUser> {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioEC usuarioEC;
 
     @Override
     public SecurityContext createSecurityContext(WithMockAquaGuardUser annotation) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        Usuario principal = usuarioRepository.findByEmail(annotation.username())
+        Usuario principal = usuarioEC.findByEmail(annotation.username())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + annotation.username()));
 
         UsernamePasswordAuthenticationToken authToken =

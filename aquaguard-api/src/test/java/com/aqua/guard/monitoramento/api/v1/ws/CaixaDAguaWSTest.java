@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockAquaGuardUser
-public class CaixaDAguaControllerTest {
+public class CaixaDAguaWSTest {
 
     @Autowired
     private MockMvc mockMvc;

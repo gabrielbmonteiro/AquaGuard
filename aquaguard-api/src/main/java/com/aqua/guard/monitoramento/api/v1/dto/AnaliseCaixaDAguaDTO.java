@@ -3,7 +3,7 @@ package com.aqua.guard.monitoramento.api.v1.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public record DadosAnaliseCaixaDAgua(
+public record AnaliseCaixaDAguaDTO(
         BigDecimal consumoMedioDiario,
         BigDecimal picoDeConsumo,
         String previsaoEsvaziamento,

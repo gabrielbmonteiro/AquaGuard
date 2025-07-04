@@ -1,8 +1,8 @@
 package com.aqua.guard.monitoramento.api.v1.ws;
 
-import com.aqua.guard.monitoramento.api.v1.dto.DadosLeituraEmbarcado;
+import com.aqua.guard.monitoramento.api.v1.dto.LeituraEmbarcadoDTO;
 import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
-import com.aqua.guard.monitoramento.core.service.LeituraService;
+import com.aqua.guard.monitoramento.core.service.LeituraAS;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/leituras")
-public class LeituraController {
+public class LeituraWS {
 
     @Autowired
-    private LeituraService leituraService;
+    private LeituraAS leituraAS;
 
     @PostMapping
     @Transactional
     public ResponseEntity<Void> registrarLeitura(
-            @RequestBody @Valid DadosLeituraEmbarcado dados,
+            @RequestBody @Valid LeituraEmbarcadoDTO dados,
             @AuthenticationPrincipal CaixaDAgua caixaAutenticada
     ) {
-        leituraService.salvarLeitura(caixaAutenticada, dados.volumeLitros());
+        leituraAS.salvarLeitura(caixaAutenticada, dados.volumeLitros());
         return ResponseEntity.noContent().build();
     }
 }

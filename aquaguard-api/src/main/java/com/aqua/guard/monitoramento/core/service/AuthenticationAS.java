@@ -1,6 +1,6 @@
 package com.aqua.guard.monitoramento.core.service;
 
-import com.aqua.guard.monitoramento.core.integration.persistence.UsuarioRepository;
+import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService implements UserDetailsService {
+public class AuthenticationAS implements UserDetailsService {
 
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioEC repository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -1,7 +1,7 @@
 package com.aqua.guard.monitoramento.api.filter;
 
-import com.aqua.guard.monitoramento.core.service.TokenService;
-import com.aqua.guard.monitoramento.core.integration.persistence.UsuarioRepository;
+import com.aqua.guard.monitoramento.core.service.TokenAS;
+import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +18,10 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenService;
+    private TokenAS tokenAS;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioEC usuarioEC;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -32,10 +32,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             // 2. Validar o token e extrair o 'subject' (email do usuário)
-            var subject = tokenService.getSubject(tokenJWT);
+            var subject = tokenAS.getSubject(tokenJWT);
 
             // 3. Buscar o usuário no banco de dados com base no email extraído
-            var usuario = usuarioRepository.findByEmail(subject).orElse(null);
+            var usuario = usuarioEC.findByEmail(subject).orElse(null);
 
             if (usuario != null) {
                 // 4. Se o usuário existe, criamos um objeto de autenticação

@@ -3,7 +3,7 @@ package com.aqua.guard.monitoramento.api.v1.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
-public record DadosAtualizacaoUsuario(
+public record AtualizacaoUsuarioDTO(
         String nomeCompleto,
 
         @Email(message = "O formato do email é inválido.")

@@ -1,12 +1,12 @@
 package com.aqua.guard.monitoramento.api.v1.ws;
 
-import com.aqua.guard.monitoramento.api.v1.dto.DadosAutenticacao;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosCadastroUsuario;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosDetalhamentoUsuario;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosTokenJWT;
+import com.aqua.guard.monitoramento.api.v1.dto.AutenticacaoDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.CadastroUsuarioDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.DetalhamentoUsuarioDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.JWTTokenDTO;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
-import com.aqua.guard.monitoramento.core.service.TokenService;
-import com.aqua.guard.monitoramento.core.service.UsuarioService;
+import com.aqua.guard.monitoramento.core.service.TokenAS;
+import com.aqua.guard.monitoramento.core.service.UsuarioAS;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,35 +21,35 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthWS {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioAS usuarioAS;
 
     @Autowired
     private AuthenticationManager manager;
 
     @Autowired
-    private TokenService tokenService;
+    private TokenAS tokenAS;
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<DadosDetalhamentoUsuario> register(
-            @RequestBody @Valid DadosCadastroUsuario dados,
+    public ResponseEntity<DetalhamentoUsuarioDTO> register(
+            @RequestBody @Valid CadastroUsuarioDTO dados,
             UriComponentsBuilder uriBuilder
     ) {
-        Usuario novoUsuario = usuarioService.registrarNovoUsuario(dados);
+        Usuario novoUsuario = usuarioAS.registrarNovoUsuario(dados);
         var uri = uriBuilder.path("/api/users/{id}").buildAndExpand(novoUsuario.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoUsuario(novoUsuario));
+        return ResponseEntity.created(uri).body(new DetalhamentoUsuarioDTO(novoUsuario));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DadosTokenJWT> login(@RequestBody @Valid DadosAutenticacao dados) {
+    public ResponseEntity<JWTTokenDTO> login(@RequestBody @Valid AutenticacaoDTO dados) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
         var authentication = manager.authenticate(authenticationToken);
-        var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+        var tokenJWT = tokenAS.gerarToken((Usuario) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+        return ResponseEntity.ok(new JWTTokenDTO(tokenJWT));
     }
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-public record DadosPareamentoDispositivo(
+public record PareamentoDispositivoDTO(
         @NotBlank String nomeCaixa,
         @NotNull @Positive BigDecimal capacidade,
         @NotBlank String serialNumberDispositivo

@@ -3,7 +3,7 @@ package com.aqua.guard.monitoramento.api.v1.dto;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-public record DadosAtualizacaoCaixaDAgua(
+public record AtualizacaoCaixaDAguaDTO(
         String nome,
 
         @Positive

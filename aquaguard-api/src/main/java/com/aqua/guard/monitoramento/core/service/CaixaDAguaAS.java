@@ -4,8 +4,8 @@ import com.aqua.guard.monitoramento.api.v1.dto.*;
 import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
 import com.aqua.guard.monitoramento.core.entity.LeituraVolume;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
-import com.aqua.guard.monitoramento.core.integration.persistence.CaixaDAguaRepository;
-import com.aqua.guard.monitoramento.core.integration.persistence.LeituraVolumeRepository;
+import com.aqua.guard.monitoramento.core.persistence.CaixaDAguaEC;
+import com.aqua.guard.monitoramento.core.persistence.LeituraVolumeEC;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,26 +22,26 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class CaixaDAguaService {
+public class CaixaDAguaAS {
 
     @Autowired
-    private CaixaDAguaRepository caixaDAguaRepository;
+    private CaixaDAguaEC caixaDAguaEC;
 
     @Autowired
-    private LeituraVolumeRepository leituraRepository;
+    private LeituraVolumeEC leituraRepository;
 
-    public CaixaDAgua parearDispositivo(DadosPareamentoDispositivo dados, Usuario usuario) {
-        if(caixaDAguaRepository.findBySerialNumber(dados.serialNumberDispositivo()).isPresent()){
+    public CaixaDAgua parearDispositivo(PareamentoDispositivoDTO dados, Usuario usuario) {
+        if(caixaDAguaEC.findBySerialNumber(dados.serialNumberDispositivo()).isPresent()){
             throw new DataIntegrityViolationException("Dispositivo com este serial já foi cadastrado.");
         }
         CaixaDAgua novaCaixa = new CaixaDAgua(dados, usuario);
-        caixaDAguaRepository.save(novaCaixa);
+        caixaDAguaEC.save(novaCaixa);
 
         return novaCaixa;
     }
 
     @Transactional
-    public CaixaDAgua atualizarInformacoes(UUID id, Usuario usuarioAutenticado, DadosAtualizacaoCaixaDAgua dados) {
+    public CaixaDAgua atualizarInformacoes(UUID id, Usuario usuarioAutenticado, AtualizacaoCaixaDAguaDTO dados) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
         caixa.atualizarInformacoes(dados);
 
@@ -51,31 +51,39 @@ public class CaixaDAguaService {
     @Transactional
     public void excluir(UUID id, Usuario usuarioAutenticado) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
-        caixaDAguaRepository.delete(caixa);
+        caixaDAguaEC.delete(caixa);
     }
 
-    public List<DadosDetalhamentoCaixaDAgua> listar(Usuario usuarioAutenticado) {
-        return caixaDAguaRepository.findAllByUsuario(usuarioAutenticado)
+    public List<DetalhamentoCaixaDAguaDTO> listar(Usuario usuarioAutenticado) {
+        return caixaDAguaEC.findAllByUsuario(usuarioAutenticado)
                 .stream()
-                .map(DadosDetalhamentoCaixaDAgua::new)
+                .map(DetalhamentoCaixaDAguaDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public DadosDetalhamentoCompletoCaixaDAgua detalhar(UUID id, Usuario usuarioAutenticado) {
+    public DetalhamentoCompletoCaixaDAguaDTO detalhar(UUID id, Usuario usuarioAutenticado) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
         var ultimaLeitura = leituraRepository
                 .findFirstByCaixaDAguaOrderByDataHoraLeituraDesc(caixa)
                 .orElse(null);
 
-        return new DadosDetalhamentoCompletoCaixaDAgua(caixa, ultimaLeitura);
+        return new DetalhamentoCompletoCaixaDAguaDTO(caixa, ultimaLeitura);
     }
 
-    public DadosAnaliseCaixaDAgua analisarConsumo(UUID id, Usuario usuarioAutenticado, LocalDateTime inicio, LocalDateTime fim) {
+    public AnaliseCaixaDAguaDTO analisarConsumo(UUID id, Usuario usuarioAutenticado, LocalDateTime inicio, LocalDateTime fim) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
         var leituras = leituraRepository.findAllByCaixaDAguaAndDataHoraLeituraBetweenOrderByDataHoraLeituraAsc(caixa, inicio, fim);
 
         if (leituras.isEmpty() || leituras.size() < 2) {
-            return new DadosAnaliseCaixaDAgua(BigDecimal.ZERO, BigDecimal.ZERO, "Dados insuficientes", List.of());
+            return new AnaliseCaixaDAguaDTO(BigDecimal.ZERO, BigDecimal.ZERO, "Dados insuficientes", List.of());
+        }
+
+        if (inicio.isAfter(fim)) {
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data de fim.");
+        }
+
+        if (Duration.between(inicio, fim).toDays() > 365) {
+            throw new IllegalArgumentException("O período de análise não pode ser maior que 365 dias.");
         }
 
         BigDecimal consumoMedio = calcularConsumoMedioDiario(leituras, inicio, fim);
@@ -83,14 +91,14 @@ public class CaixaDAguaService {
         String previsaoEsvaziamento = calcularPrevisaoEsvaziamento(leituras.get(leituras.size() - 1).getVolumeLitros(), consumoMedio);
         var pontosGrafico = mapearLeiturasParaGrafico(leituras);
 
-        return new DadosAnaliseCaixaDAgua(consumoMedio, picoDeConsumo, previsaoEsvaziamento, pontosGrafico);
+        return new AnaliseCaixaDAguaDTO(consumoMedio, picoDeConsumo, previsaoEsvaziamento, pontosGrafico);
     }
 
     /**
      * Valida se o usuário tem permissão para acessar a caixa d'água e a retorna.
      */
     private CaixaDAgua validarAcessoUsuario(UUID id, Usuario usuarioAutenticado) {
-        var caixa = caixaDAguaRepository.findById(id)
+        var caixa = caixaDAguaEC.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Caixa d'água não encontrada."));
 
         if (!caixa.getUsuario().getId().equals(usuarioAutenticado.getId())) {
@@ -103,9 +111,9 @@ public class CaixaDAguaService {
     /**
      * Mapeia a lista de entidades LeituraVolume para uma lista de pontos para o gráfico.
      */
-    private List<DadosAnaliseCaixaDAgua.PontoGrafico> mapearLeiturasParaGrafico(List<LeituraVolume> leituras) {
+    private List<AnaliseCaixaDAguaDTO.PontoGrafico> mapearLeiturasParaGrafico(List<LeituraVolume> leituras) {
         return leituras.stream()
-                .map(l -> new DadosAnaliseCaixaDAgua.PontoGrafico(l.getDataHoraLeitura(), l.getVolumeLitros()))
+                .map(l -> new AnaliseCaixaDAguaDTO.PontoGrafico(l.getDataHoraLeitura(), l.getVolumeLitros()))
                 .collect(Collectors.toList());
     }
 

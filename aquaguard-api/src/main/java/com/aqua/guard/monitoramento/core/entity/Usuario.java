@@ -1,7 +1,7 @@
 package com.aqua.guard.monitoramento.core.entity;
 
-import com.aqua.guard.monitoramento.api.v1.dto.DadosAtualizacaoUsuario;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosCadastroUsuario;
+import com.aqua.guard.monitoramento.api.v1.dto.AtualizacaoUsuarioDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.CadastroUsuarioDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -84,7 +84,7 @@ public class Usuario implements UserDetails {
         return this.ativo;
     }
 
-    public Usuario(DadosCadastroUsuario dados, String senhaHasheada) {
+    public Usuario(CadastroUsuarioDTO dados, String senhaHasheada) {
         this.nomeCompleto = dados.nomeCompleto();
         this.email = dados.email();
         this.telefone = dados.telefone();
@@ -93,7 +93,7 @@ public class Usuario implements UserDetails {
         this.caixasDAgua = new ArrayList<>();
     }
 
-    public void atualizarInformacoes(DadosAtualizacaoUsuario dados, PasswordEncoder passwordEncoder) {
+    public void atualizarInformacoes(AtualizacaoUsuarioDTO dados, PasswordEncoder passwordEncoder) {
         if (dados.nomeCompleto() != null && !dados.nomeCompleto().isBlank()) {
             this.nomeCompleto = dados.nomeCompleto();
         }

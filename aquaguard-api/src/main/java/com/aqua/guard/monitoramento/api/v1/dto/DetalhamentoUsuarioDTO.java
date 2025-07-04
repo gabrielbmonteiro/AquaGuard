@@ -4,14 +4,14 @@ import com.aqua.guard.monitoramento.core.entity.Usuario;
 
 import java.util.UUID;
 
-public record DadosDetalhamentoUsuario(
+public record DetalhamentoUsuarioDTO(
         UUID id,
         String nomeCompleto,
         String email,
         String telefone
 ) {
 
-    public DadosDetalhamentoUsuario(Usuario usuario) {
+    public DetalhamentoUsuarioDTO(Usuario usuario) {
         this(
                 usuario.getId(),
                 usuario.getNomeCompleto(),

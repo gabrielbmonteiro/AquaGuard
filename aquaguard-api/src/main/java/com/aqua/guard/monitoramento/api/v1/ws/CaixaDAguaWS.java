@@ -2,7 +2,7 @@ package com.aqua.guard.monitoramento.api.v1.ws;
 
 import com.aqua.guard.monitoramento.api.v1.dto.*;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
-import com.aqua.guard.monitoramento.core.service.CaixaDAguaService;
+import com.aqua.guard.monitoramento.core.service.CaixaDAguaAS;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -21,33 +21,33 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/caixas-dagua")
-public class CaixaDAguaController {
+public class CaixaDAguaWS {
 
     @Autowired
-    private CaixaDAguaService caixaDAguaService;
+    private CaixaDAguaAS caixaDAguaAS;
 
     @PostMapping("/parear-dispositivo")
     @Transactional
-    public ResponseEntity<DadosDetalhamentoCaixaDAgua> parear(
-            @RequestBody @Valid DadosPareamentoDispositivo dados,
+    public ResponseEntity<DetalhamentoCaixaDAguaDTO> parear(
+            @RequestBody @Valid PareamentoDispositivoDTO dados,
             @AuthenticationPrincipal Usuario usuarioAutenticado,
             UriComponentsBuilder uriBuilder
     ) {
-        var novaCaixa = caixaDAguaService.parearDispositivo(dados, usuarioAutenticado);
+        var novaCaixa = caixaDAguaAS.parearDispositivo(dados, usuarioAutenticado);
         var uri = uriBuilder.path("/caixas-dagua/{id}").buildAndExpand(novaCaixa.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoCaixaDAgua(novaCaixa));
+        return ResponseEntity.created(uri).body(new DetalhamentoCaixaDAguaDTO(novaCaixa));
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<DadosDetalhamentoCaixaDAgua> atualizar(
+    public ResponseEntity<DetalhamentoCaixaDAguaDTO> atualizar(
             @PathVariable UUID id,
             @AuthenticationPrincipal Usuario usuarioAutenticado,
-            @RequestBody @Valid DadosAtualizacaoCaixaDAgua dados
+            @RequestBody @Valid AtualizacaoCaixaDAguaDTO dados
     ) {
         try {
-            var caixaAtualizada = caixaDAguaService.atualizarInformacoes(id, usuarioAutenticado, dados);
-            return ResponseEntity.ok(new DadosDetalhamentoCaixaDAgua(caixaAtualizada));
+            var caixaAtualizada = caixaDAguaAS.atualizarInformacoes(id, usuarioAutenticado, dados);
+            return ResponseEntity.ok(new DetalhamentoCaixaDAguaDTO(caixaAtualizada));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (AccessDeniedException e) {
@@ -62,7 +62,7 @@ public class CaixaDAguaController {
             @AuthenticationPrincipal Usuario usuarioAutenticado
     ) {
         try {
-            caixaDAguaService.excluir(id, usuarioAutenticado);
+            caixaDAguaAS.excluir(id, usuarioAutenticado);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -72,18 +72,18 @@ public class CaixaDAguaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DadosDetalhamentoCaixaDAgua>> listar(@AuthenticationPrincipal Usuario usuarioAutenticado) {
-        var listaDto = caixaDAguaService.listar(usuarioAutenticado);
+    public ResponseEntity<List<DetalhamentoCaixaDAguaDTO>> listar(@AuthenticationPrincipal Usuario usuarioAutenticado) {
+        var listaDto = caixaDAguaAS.listar(usuarioAutenticado);
         return ResponseEntity.ok(listaDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DadosDetalhamentoCompletoCaixaDAgua> detalhar(
+    public ResponseEntity<DetalhamentoCompletoCaixaDAguaDTO> detalhar(
             @PathVariable UUID id,
             @AuthenticationPrincipal Usuario usuarioAutenticado
     ) {
         try {
-            var dtoCompleto = caixaDAguaService.detalhar(id, usuarioAutenticado);
+            var dtoCompleto = caixaDAguaAS.detalhar(id, usuarioAutenticado);
             return ResponseEntity.ok(dtoCompleto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -93,14 +93,14 @@ public class CaixaDAguaController {
     }
 
     @GetMapping("/{id}/analise")
-    public ResponseEntity<DadosAnaliseCaixaDAgua> analisar(
+    public ResponseEntity<AnaliseCaixaDAguaDTO> analisar(
             @PathVariable UUID id,
             @AuthenticationPrincipal Usuario usuarioAutenticado,
             @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam("fim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim
     ) {
         try {
-            var dadosAnalise = caixaDAguaService.analisarConsumo(id, usuarioAutenticado, inicio, fim);
+            var dadosAnalise = caixaDAguaAS.analisarConsumo(id, usuarioAutenticado, inicio, fim);
             return ResponseEntity.ok(dadosAnalise);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
-public record DadosLeituraEmbarcado(
+public record LeituraEmbarcadoDTO(
         @NotNull @PositiveOrZero
         BigDecimal volumeLitros
 ) {}

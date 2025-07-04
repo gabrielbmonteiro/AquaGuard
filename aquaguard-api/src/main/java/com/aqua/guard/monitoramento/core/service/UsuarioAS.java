@@ -1,25 +1,23 @@
 package com.aqua.guard.monitoramento.core.service;
 
-import com.aqua.guard.monitoramento.api.v1.dto.DadosAtualizacaoUsuario;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosCadastroUsuario;
-import com.aqua.guard.monitoramento.core.integration.persistence.UsuarioRepository;
+import com.aqua.guard.monitoramento.api.v1.dto.AtualizacaoUsuarioDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.CadastroUsuarioDTO;
+import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
-public class UsuarioService {
+public class UsuarioAS {
 
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioEC repository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Usuario registrarNovoUsuario(DadosCadastroUsuario dados) {
+    public Usuario registrarNovoUsuario(CadastroUsuarioDTO dados) {
         if (repository.findByEmail(dados.email()).isPresent()) {
             throw new IllegalStateException("O email fornecido já está em uso.");
         }
@@ -33,7 +31,7 @@ public class UsuarioService {
         repository.delete(usuario);
     }
 
-    public Usuario atualizarInformacoes(Usuario usuarioAutenticado, DadosAtualizacaoUsuario dados) {
+    public Usuario atualizarInformacoes(Usuario usuarioAutenticado, AtualizacaoUsuarioDTO dados) {
         if (dados.email() != null && !dados.email().equalsIgnoreCase(usuarioAutenticado.getEmail())) {
             if (repository.findByEmail(dados.email()).isPresent()) {
                 throw new IllegalStateException("O email fornecido já está em uso por outra conta.");

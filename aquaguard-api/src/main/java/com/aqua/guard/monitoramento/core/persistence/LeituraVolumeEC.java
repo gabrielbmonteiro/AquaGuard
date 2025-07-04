@@ -1,4 +1,4 @@
-package com.aqua.guard.monitoramento.core.integration.persistence;
+package com.aqua.guard.monitoramento.core.persistence;
 
 import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
 import com.aqua.guard.monitoramento.core.entity.LeituraVolume;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface LeituraVolumeRepository extends JpaRepository<LeituraVolume, Long> {
+public interface LeituraVolumeEC extends JpaRepository<LeituraVolume, Long> {
 
     Optional<LeituraVolume> findFirstByCaixaDAguaOrderByDataHoraLeituraDesc(CaixaDAgua caixa);
 

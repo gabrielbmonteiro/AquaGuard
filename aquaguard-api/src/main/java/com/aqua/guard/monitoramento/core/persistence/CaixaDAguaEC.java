@@ -1,4 +1,4 @@
-package com.aqua.guard.monitoramento.core.integration.persistence;
+package com.aqua.guard.monitoramento.core.persistence;
 
 import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CaixaDAguaRepository extends JpaRepository<CaixaDAgua, UUID> {
+public interface CaixaDAguaEC extends JpaRepository<CaixaDAgua, UUID> {
 
     Optional<CaixaDAgua> findBySerialNumber(String serialNumber);
 
