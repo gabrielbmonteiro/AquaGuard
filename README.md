@@ -73,23 +73,69 @@ Para executar a API localmente, você precisará ter o Java (JDK 21) e o Maven i
 
 A API estará disponível em `http://localhost:8080`.
 
-## 🗺️ Visão Geral da API
+## 🗺️ Endpoints da API (v1)
 
-| Método | Endpoint | Descrição | Autenticação |
+### Autenticação (`/api/v1/auth`)
+
+Endpoints para registro, login e verificação de contas de usuário.
+
+| Método HTTP | Endpoint | Descrição | Autenticação |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Registra um novo usuário. | Nenhuma |
-| `POST` | `/api/auth/login` | Realiza o login e retorna um token JWT. | Nenhuma |
-| `GET` | `/api/users/me` | Retorna os dados do usuário logado. | Usuário (JWT) |
-| `PUT` | `/api/users/me` | Atualiza os dados do usuário logado. | Usuário (JWT) |
-| `DELETE` | `/api/users/me` | Desativa a conta do usuário logado. | Usuário (JWT) |
-| `POST` | `/caixas-dagua/parear-dispositivo` | Associa um novo dispositivo a uma caixa d'água. | Usuário (JWT) |
-| `GET` | `/caixas-dagua` | Lista todas as caixas d'água do usuário. | Usuário (JWT) |
-| `GET` | `/caixas-dagua/{id}` | Retorna os dados detalhados de uma caixa d'água. | Usuário (JWT)
-| `GET` | `/caixas-dagua/{id}/analise` | Retorna os dados históricos e KPIs para análise. | Usuário (JWT) |
-| `PUT` | `/caixas-dagua/{id}` | Atualiza as informações de uma caixa d'água. | Usuário (JWT) |
-| `DELETE` | `/caixas-dagua/{id}` | Desativa uma caixa d'água. | Usuário (JWT) |
-| `GET` | `/api/provisionamento/configuracao/{sn}` | Endpoint para o dispositivo obter sua API Key. | Nenhuma |
-| `POST` | `/api/leituras` | Endpoint para o dispositivo enviar leituras de volume. | Dispositivo (API Key) |
+| `POST` | `/register` | Registra um novo usuário. | Pública |
+| `POST` | `/login` | Autentica um usuário e retorna um token JWT. | Pública |
+| `POST` | `/verify` | Valida uma conta de usuário com o código de verificação. | Pública |
+| `POST` | `/resend-code` | Reenvia o código de verificação para o e-mail do usuário. | Pública |
+
+---
+
+### Usuários (`/api/v1/users`)
+
+Endpoints para gerenciamento do perfil do usuário autenticado.
+
+| Método HTTP | Endpoint | Descrição | Autenticação |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/me` | Retorna os dados do perfil do usuário autenticado. | JWT (Usuário) |
+| `PUT` | `/me/profile` | Atualiza as informações de perfil (nome, telefone). | JWT (Usuário) |
+| `PUT` | `/me/password` | Altera a senha do usuário. | JWT (Usuário) |
+| `DELETE` | `/me` | Exclui (desativa) a conta do usuário. | JWT (Usuário) |
+| `POST` | `/me/change-email` | Inicia o processo de alteração de e-mail. | JWT (Usuário) |
+| `POST` | `/me/verify-email-change` | Confirma a alteração de e-mail com um código de verificação. | JWT (Usuário) |
+
+---
+
+### Caixas d'Água (`/api/v1/caixas-dagua`)
+
+Endpoints para gerenciar as caixas d'água associadas a um usuário.
+
+| Método HTTP | Endpoint | Descrição | Autenticação |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/` | Lista todas as caixas d'água do usuário. | JWT (Usuário) |
+| `GET` | `/{id}` | Retorna os detalhes completos de uma caixa d'água específica. | JWT (Usuário) |
+| `GET` | `/{id}/analise` | Retorna uma análise de consumo para um período (`?inicio` e `?fim`). | JWT (Usuário) |
+| `POST` | `/parear-dispositivo` | Associa (pareia) um novo dispositivo de hardware a uma conta de usuário. | JWT (Usuário) |
+| `PUT` | `/{id}` | Atualiza as informações de uma caixa d'água (nome, capacidade, metas). | JWT (Usuário) |
+| `DELETE` | `/{id}` | Exclui (desativa) uma caixa d'água. | JWT (Usuário) |
+
+
+---
+
+### Provisionamento de Dispositivo (`/api/v1/provisionamento`)
+
+Endpoint para o embarcado obter suas configurações iniciais.
+
+| Método HTTP | Endpoint | Descrição | Autenticação |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/configuracao/{serialNumber}` | Retorna a chave de API e a URL de report para um dispositivo. | Pública |
+
+---
+
+### Leituras do Dispositivo (`/api/v1/leituras`)
+
+Endpoint para o embarcado enviar os dados de medição.
+
+| Método HTTP | Endpoint | Descrição | Autenticação |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/` | Registra uma nova leitura de volume. | API Key (Dispositivo) |
 
 ## Autores
 
