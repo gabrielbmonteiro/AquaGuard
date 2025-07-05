@@ -1,7 +1,7 @@
 package com.aqua.guard.monitoramento.core.entity;
 
-import com.aqua.guard.monitoramento.api.v1.dto.DadosAtualizacaoCaixaDAgua;
-import com.aqua.guard.monitoramento.api.v1.dto.DadosPareamentoDispositivo;
+import com.aqua.guard.monitoramento.api.v1.dto.AtualizacaoCaixaDAguaDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.PareamentoDispositivoDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -67,7 +67,7 @@ public class CaixaDAgua {
     @OneToMany(mappedBy = "caixaDAgua", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LeituraVolume> leituras;
 
-    public CaixaDAgua(DadosPareamentoDispositivo dados, Usuario usuario) {
+    public CaixaDAgua(PareamentoDispositivoDTO dados, Usuario usuario) {
         this.usuario = usuario;
         this.serialNumber = dados.serialNumberDispositivo();
         this.nome = dados.nomeCaixa();
@@ -80,7 +80,7 @@ public class CaixaDAgua {
         this.ativo = true;
     }
 
-    public void atualizarInformacoes(DadosAtualizacaoCaixaDAgua dados) {
+    public void atualizarInformacoes(AtualizacaoCaixaDAguaDTO dados) {
         if (dados.nome() != null && !dados.nome().isBlank()) {
             this.nome = dados.nome();
         }

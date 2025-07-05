@@ -2,13 +2,25 @@ spring:
   application:
       name: api
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost/aquaguard_api
-    username: root
-    password: 0w`eW=4`*j/`2>+3EDYlRE/
-
+      url: ${DB_URL}
+      username: ${DB_USER}
+      password: ${DB_PASS}
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username: ${MAILTRAP_API_USER}
+    password: ${MAILTRAP_API_TOKEN}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
 
 api:
   security:
       token:
-          secret: 0w`eW=4`*j/`2>+3EDYlRE/
+          secret: ${JWT_SECRET}
+          expiration-hours: 2

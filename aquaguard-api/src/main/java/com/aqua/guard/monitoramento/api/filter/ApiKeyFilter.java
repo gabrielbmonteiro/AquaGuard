@@ -1,6 +1,6 @@
 package com.aqua.guard.monitoramento.api.filter;
 
-import com.aqua.guard.monitoramento.core.integration.persistence.CaixaDAguaRepository;
+import com.aqua.guard.monitoramento.core.persistence.CaixaDAguaEC;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class ApiKeyFilter extends OncePerRequestFilter {
 
     @Autowired
-    private CaixaDAguaRepository caixaDAguaRepository;
+    private CaixaDAguaEC caixaDAguaEC;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -26,10 +26,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         var apiKey = request.getHeader("X-API-Key");
 
         if (apiKey != null) {
-            var caixaOptional = caixaDAguaRepository.findByChaveApi(apiKey);
+            var caixaOptional = caixaDAguaEC.findByChaveApi(apiKey);
             if (caixaOptional.isPresent()) {
                 var caixa = caixaOptional.get();
-                // Usamos o próprio objeto CaixaDAgua como principal
                 var authentication = new UsernamePasswordAuthenticationToken(caixa, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
