@@ -86,7 +86,7 @@ public class CaixaDAguaAS {
             throw new IllegalArgumentException("O período de análise não pode ser maior que 365 dias.");
         }
 
-        BigDecimal consumoMedio = calcularConsumoMedioDiario(leituras, inicio, fim);
+        BigDecimal consumoMedio = calcularConsumoMedio(leituras, inicio, fim);
         BigDecimal picoDeConsumo = calcularPicoDeConsumo(leituras);
         String previsaoEsvaziamento = calcularPrevisaoEsvaziamento(leituras.get(leituras.size() - 1).getVolumeLitros(), consumoMedio);
         var pontosGrafico = mapearLeiturasParaGrafico(leituras);
@@ -120,7 +120,7 @@ public class CaixaDAguaAS {
     /**
      * Calcula o consumo médio diário com base nas leituras do período.
      */
-    private BigDecimal calcularConsumoMedioDiario(List<LeituraVolume> leituras, LocalDateTime inicio, LocalDateTime fim) {
+    private BigDecimal calcularConsumoMedio(List<LeituraVolume> leituras, LocalDateTime inicio, LocalDateTime fim) {
         BigDecimal consumoTotal = leituras.get(0).getVolumeLitros().subtract(leituras.get(leituras.size() - 1).getVolumeLitros());
         long dias = Duration.between(inicio, fim).toDays();
         dias = dias == 0 ? 1 : dias; // Evita divisão por zero para períodos menores que 1 dia
@@ -150,9 +150,33 @@ public class CaixaDAguaAS {
         if (consumoMedio.compareTo(BigDecimal.ZERO) <= 0) {
             return "Consumo zerado";
         }
-        BigDecimal diasRestantes = volumeAtual.divide(consumoMedio, 0, RoundingMode.DOWN);
+        BigDecimal diasRestantesDecimal = volumeAtual.divide(consumoMedio, 2, RoundingMode.HALF_UP);
 
-        return "Aproximadamente " + diasRestantes.intValue() + " dias restantes.";
+        if (diasRestantesDecimal.compareTo(BigDecimal.ONE) >= 0) {
+            int dias = diasRestantesDecimal.intValue();
+            if (dias == 1) {
+                return "Aproximadamente 1 dia restante.";
+            } else {
+                return "Aproximadamente " + dias + " dias restantes.";
+            }
+        }
+
+        BigDecimal consumoMedioPorHora = consumoMedio.divide(new BigDecimal("24"), 2, RoundingMode.HALF_UP);
+
+        if (consumoMedioPorHora.compareTo(BigDecimal.ZERO) <= 0) {
+            return "Menos de um dia restante.";
+        }
+
+        BigDecimal horasRestantes = volumeAtual.divide(consumoMedioPorHora, 0, RoundingMode.DOWN);
+        int horas = horasRestantes.intValue();
+
+        if (horas <= 0) {
+            return "Menos de uma hora restante.";
+        } else if (horas == 1) {
+            return "Menos de um dia restante (aproximadamente 1 hora).";
+        } else {
+            return "Menos de um dia restante (aproximadamente " + horas + " horas).";
+        }
     }
 
 }
