@@ -109,6 +109,12 @@ public class Usuario implements UserDetails {
         this.telefone = dados.telefone();
         this.senha = novaSenhaHasheada;
         this.ativo = false;
+
+        this.pendingEmail = null;
+        this.emailChangeCode = null;
+        this.emailChangeCodeExpiresAt = null;
+        this.verificationCode = null;
+        this.verificationCodeExpiresAt = null;
     }
 
     public void atualizarPerfil(AtualizacaoPerfilDTO dados) {

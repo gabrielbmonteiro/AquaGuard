@@ -1,6 +1,7 @@
 package com.aqua.guard.monitoramento.core.service;
 
 import com.aqua.guard.monitoramento.api.v1.dto.*;
+import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
 import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class UsuarioAS {
 
     @Autowired
     private UsuarioEC repository;
+
+    @Autowired
+    private CaixaDAguaAS caixaDAguaAS;
 
     @Autowired
     private EmailAS emailAS;
@@ -38,6 +42,7 @@ public class UsuarioAS {
                 throw new IllegalStateException("O email fornecido já está em uso.");
             }
 
+            caixaDAguaAS.excluirPermanentementePorUsuario(usuarioExistente);
             usuarioExistente.atualizarDadosDeNovoRegistro(dados, senhaHasheada);
             usuarioParaSalvar = usuarioExistente;
         } else {
@@ -90,6 +95,7 @@ public class UsuarioAS {
     }
 
     public void excluirConta(Usuario usuario) {
+        caixaDAguaAS.excluirTodasPorUsuario(usuario);
         repository.delete(usuario);
     }
 

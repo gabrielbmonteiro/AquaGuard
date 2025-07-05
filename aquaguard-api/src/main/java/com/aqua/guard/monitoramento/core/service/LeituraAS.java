@@ -5,8 +5,10 @@ import com.aqua.guard.monitoramento.core.entity.LeituraVolume;
 import com.aqua.guard.monitoramento.core.persistence.LeituraVolumeEC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class LeituraAS {
@@ -21,6 +23,17 @@ public class LeituraAS {
 
         var novaLeitura = new LeituraVolume(caixaAutenticada, volumeLitros);
         leituraVolumeEC.save(novaLeitura);
+    }
+
+    @Transactional
+    public void excluirTodasPorCaixas(List<CaixaDAgua> caixas) {
+        List<LeituraVolume> leiturasParaExcluir = caixas.stream()
+                .flatMap(caixa -> caixa.getLeituras().stream())
+                .toList();
+
+        if (!leiturasParaExcluir.isEmpty()) {
+            leituraVolumeEC.deleteAllInBatch(leiturasParaExcluir);
+        }
     }
 
 }
