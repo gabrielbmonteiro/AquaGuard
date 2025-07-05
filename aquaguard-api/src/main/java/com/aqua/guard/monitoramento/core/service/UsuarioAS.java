@@ -49,7 +49,7 @@ public class UsuarioAS {
             usuarioParaSalvar = new Usuario(dados, senhaHasheada);
         }
 
-        String codigo = String.format("%06d", random.nextInt(999999));
+        String codigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime dataExpiracao = LocalDateTime.now().plusMinutes(10);
 
         usuarioParaSalvar.definirCodigoDeVerificacao(codigo, dataExpiracao);
@@ -70,7 +70,7 @@ public class UsuarioAS {
             throw new IllegalStateException("Esta conta já foi ativada.");
         }
 
-        String novoCodigo = String.format("%06d", random.nextInt(999999));
+        String novoCodigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime novaDataExpiracao = LocalDateTime.now().plusMinutes(10); // Expira em 10 minutos
 
         usuario.definirCodigoDeVerificacao(novoCodigo, novaDataExpiracao);
@@ -128,7 +128,7 @@ public class UsuarioAS {
             throw new IllegalStateException("O novo e-mail fornecido já está em uso por outra conta.");
         }
 
-        String codigo = String.format("%06d", random.nextInt(999999));
+        String codigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime dataExpiracao = LocalDateTime.now().plusMinutes(10);
 
         usuario.definirCodigoDeMudancaDeEmail(dados.novoEmail(), codigo, dataExpiracao);
