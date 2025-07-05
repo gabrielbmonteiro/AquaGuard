@@ -13,20 +13,15 @@ import java.math.BigDecimal;
 public record CadastroCaixaDAguaDTO(
         @NotBlank
         String nome,
-
         @NotBlank(message = "O ID do dispositivo é obrigatório.")
         String idDispositivo,
-
         @NotNull
         @Positive
         BigDecimal capacidade,
-
         @Positive
         BigDecimal metaDiaria,
-
         @Positive
         BigDecimal metaSemanal,
-
         @Positive
         BigDecimal metaMensal
 ) {

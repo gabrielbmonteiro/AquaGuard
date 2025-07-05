@@ -8,17 +8,14 @@ import jakarta.validation.constraints.Size;
 public record CadastroUsuarioDTO(
         @NotBlank
         String nomeCompleto,
-
         @NotBlank
         @Email(message = "O formato do email é inválido.")
         String email,
-
         @NotBlank
         @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
         String senha,
-
         @NotBlank
-        @Pattern(regexp = "\\d{11,11}", message = "O telefone deve conter 8 ou 9 dígitos numéricos.")
+        @Pattern(regexp = "\\d{11,11}", message = "O telefone deve conter apenas números, incluindo o DDD.")
         String telefone
 ) {
 }

@@ -1,7 +1,6 @@
 package com.aqua.guard.monitoramento.api.v1.ws;
 
-import com.aqua.guard.monitoramento.api.v1.dto.AtualizacaoUsuarioDTO;
-import com.aqua.guard.monitoramento.api.v1.dto.DetalhamentoUsuarioDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.*;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import com.aqua.guard.monitoramento.core.service.UsuarioAS;
 import jakarta.validation.Valid;
@@ -24,14 +23,41 @@ public class UsuarioWS {
         return ResponseEntity.ok(dadosUsuario);
     }
 
-    @PutMapping("/me")
+    @PutMapping("/me/profile")
     @Transactional
-    public ResponseEntity<DetalhamentoUsuarioDTO> atualizarMinhaConta(
+    public ResponseEntity<DetalhamentoUsuarioDTO> atualizarPerfil(
             @AuthenticationPrincipal Usuario usuarioAutenticado,
-            @RequestBody @Valid AtualizacaoUsuarioDTO dados
-    ) {
-        var usuarioAtualizado = usuarioAS.atualizarInformacoes(usuarioAutenticado, dados);
+            @RequestBody @Valid AtualizacaoPerfilDTO dados) {
+        var usuarioAtualizado = usuarioAS.atualizarPerfil(usuarioAutenticado, dados);
         return ResponseEntity.ok(new DetalhamentoUsuarioDTO(usuarioAtualizado));
+    }
+
+    @PutMapping("/me/password")
+    @Transactional
+    public ResponseEntity<Void> alterarSenha(
+            @AuthenticationPrincipal Usuario usuarioAutenticado,
+            @RequestBody @Valid AlteracaoSenhaDTO dados) {
+        usuarioAS.alterarSenha(usuarioAutenticado, dados);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/change-email")
+    @Transactional
+    public ResponseEntity<Void> iniciarAlteracaoDeEmail(
+            @AuthenticationPrincipal Usuario usuarioAutenticado,
+            @RequestBody @Valid AlteracaoEmailDTO dados) {
+        usuarioAS.iniciarTrocaDeEmail(usuarioAutenticado, dados);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/me/verify-email-change")
+    @Transactional
+    public ResponseEntity<Void> verificarTrocaDeEmail(
+            @AuthenticationPrincipal Usuario usuarioAutenticado,
+            @RequestBody @Valid VerificacaoTrocaEmailDTO dados) {
+
+        usuarioAS.verificarEConfirmarTrocaDeEmail(usuarioAutenticado, dados.codigo());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")

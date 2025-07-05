@@ -1,9 +1,6 @@
 package com.aqua.guard.monitoramento.api.v1.ws;
 
-import com.aqua.guard.monitoramento.api.v1.dto.AutenticacaoDTO;
-import com.aqua.guard.monitoramento.api.v1.dto.CadastroUsuarioDTO;
-import com.aqua.guard.monitoramento.api.v1.dto.DetalhamentoUsuarioDTO;
-import com.aqua.guard.monitoramento.api.v1.dto.JWTTokenDTO;
+import com.aqua.guard.monitoramento.api.v1.dto.*;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import com.aqua.guard.monitoramento.core.service.TokenAS;
 import com.aqua.guard.monitoramento.core.service.UsuarioAS;
@@ -42,6 +39,20 @@ public class AuthWS {
         var uri = uriBuilder.path("/api/users/{id}").buildAndExpand(novoUsuario.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DetalhamentoUsuarioDTO(novoUsuario));
+    }
+
+    @PostMapping("/resend-code")
+    @Transactional
+    public ResponseEntity<Void> reenviarCodigo(@RequestBody @Valid ReenvioCodigoDTO dados) {
+        usuarioAS.reenviarCodigoDeVerificacao(dados.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify")
+    @Transactional
+    public ResponseEntity<Void> verificarCodigo(@RequestBody @Valid VerificacaoDTO dados) {
+        usuarioAS.verificarCodigo(dados.email(), dados.codigo());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")

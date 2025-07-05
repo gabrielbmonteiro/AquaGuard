@@ -29,7 +29,6 @@ public class ApiKeyFilter extends OncePerRequestFilter {
             var caixaOptional = caixaDAguaEC.findByChaveApi(apiKey);
             if (caixaOptional.isPresent()) {
                 var caixa = caixaOptional.get();
-                // Usamos o próprio objeto CaixaDAgua como principal
                 var authentication = new UsernamePasswordAuthenticationToken(caixa, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
