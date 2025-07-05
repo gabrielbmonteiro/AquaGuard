@@ -54,7 +54,11 @@ public class UsuarioAS {
 
         usuarioParaSalvar.definirCodigoDeVerificacao(codigo, dataExpiracao);
 
-        emailAS.sendVerificationCode(usuarioParaSalvar.getEmail(), codigo);
+        // --- MUDANÇA TEMPORARIA - P/ TESTES ---
+        usuarioParaSalvar.ativarConta(); // Apagar linha após testes!
+        // emailAS.sendVerificationCode(usuarioParaSalvar.getEmail(), codigo); // Descomentar linha após testes!
+        // --------------------------------------
+
         return repository.save(usuarioParaSalvar);
     }
 
