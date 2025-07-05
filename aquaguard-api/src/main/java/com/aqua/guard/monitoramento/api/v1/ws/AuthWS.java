@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthWS {
 
     @Autowired
@@ -36,7 +36,7 @@ public class AuthWS {
             UriComponentsBuilder uriBuilder
     ) {
         Usuario novoUsuario = usuarioAS.registrarNovoUsuario(dados);
-        var uri = uriBuilder.path("/api/users/{id}").buildAndExpand(novoUsuario.getId()).toUri();
+        var uri = uriBuilder.path("/api/v1/users/{id}").buildAndExpand(novoUsuario.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DetalhamentoUsuarioDTO(novoUsuario));
     }

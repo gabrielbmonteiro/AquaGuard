@@ -19,6 +19,9 @@ public class TokenAS {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    @Value("${api.security.token.expiration-hours:2}")
+    private long expirationHours;
+
     public String gerarToken(Usuario usuario) {
         try {
             Algorithm algoritmo = Algorithm.HMAC256(secret);
@@ -47,7 +50,7 @@ public class TokenAS {
     }
 
     private Instant dataExpiracao() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(expirationHours).toInstant(ZoneOffset.of("-03:00"));
     }
 
 }

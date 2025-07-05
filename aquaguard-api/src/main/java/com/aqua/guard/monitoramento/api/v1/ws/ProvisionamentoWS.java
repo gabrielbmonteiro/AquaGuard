@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/provisionamento")
+@RequestMapping("/api/v1/provisionamento")
 public class ProvisionamentoWS {
 
     @Autowired

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/caixas-dagua")
+@RequestMapping("/api/v1/caixas-dagua")
 public class CaixaDAguaWS {
 
     @Autowired

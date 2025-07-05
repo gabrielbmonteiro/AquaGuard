@@ -16,7 +16,7 @@ public class ProvisionamentoAS {
         var caixa = caixaDAguaEC.findBySerialNumber(serialNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Dispositivo não pareado."));
 
-        return new ConfiguracaoDispositivoDTO(caixa.getChaveApi(), "/api/leituras");
+        return new ConfiguracaoDispositivoDTO(caixa.getChaveApi(), "/api/v1/leituras");
     }
 
 }
