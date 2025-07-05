@@ -2,6 +2,7 @@ package com.aqua.guard.monitoramento.core.entity;
 
 import com.aqua.guard.monitoramento.api.v1.dto.AtualizacaoCaixaDAguaDTO;
 import com.aqua.guard.monitoramento.api.v1.dto.PareamentoDispositivoDTO;
+import com.aqua.guard.monitoramento.core.enums.FrequenciaAtualizacao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -58,6 +59,10 @@ public class CaixaDAgua {
     @Column(name = "meta_mensal", precision = 10, scale = 2)
     private BigDecimal metaMensal;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "frequencia_atualizacao")
+    private FrequenciaAtualizacao frequenciaAtualizacao = FrequenciaAtualizacao.A_CADA_1_HORA;
+
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
@@ -73,10 +78,11 @@ public class CaixaDAgua {
         this.nome = dados.nomeCaixa();
         this.capacidade = dados.capacidade();
         this.chaveApi = UUID.randomUUID().toString().replace("-", "") +
-                UUID.randomUUID().toString().replace("-", "");
+                        UUID.randomUUID().toString().replace("-", "");
         this.metaDiaria = null;
         this.metaSemanal = null;
         this.metaMensal = null;
+        this.frequenciaAtualizacao = FrequenciaAtualizacao.A_CADA_1_HORA;
         this.ativo = true;
     }
 
@@ -95,6 +101,9 @@ public class CaixaDAgua {
         }
         if (dados.metaMensal() != null) {
             this.metaMensal = dados.metaMensal();
+        }
+        if (dados.frequenciaAtualizacao() != null) {
+            this.frequenciaAtualizacao = dados.frequenciaAtualizacao();
         }
     }
 
