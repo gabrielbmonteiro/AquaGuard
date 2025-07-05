@@ -103,7 +103,7 @@ Endpoints para gerenciamento do perfil do usuário autenticado.
 
 ---
 
-### Caixas d'Água (`/api/v1/caixas-dagua`)
+### Caixas D'Água (`/api/v1/caixas-dagua`)
 
 Endpoints para gerenciar as caixas d'água associadas a um usuário.
 
