@@ -126,7 +126,7 @@ Endpoint para o embarcado obter suas configurações iniciais.
 
 | Método HTTP | Endpoint | Descrição | Autenticação |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/configuracao/{serialNumber}` | Retorna a chave de API, a URL de report e tempo de intervalo de report". | Pública |
+| `GET` | `/configuracao/{serialNumber}` | Retorna a chave de API, a URL de report e frequência de report (em segundos) | Pública |
 
 ---
 
