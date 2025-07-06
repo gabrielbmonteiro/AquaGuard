@@ -95,7 +95,7 @@ Endpoints para gerenciamento do perfil do usuário autenticado.
 | Método HTTP | Endpoint | Descrição | Autenticação |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/me` | Retorna os dados do perfil do usuário autenticado. | JWT (Usuário) |
-| `PUT` | `/me/profile` | Atualiza as informações de perfil (ome, sobrenome, telefone, preferências de notificação). | JWT (Usuário) |
+| `PUT` | `/me/profile` | Atualiza as informações de perfil (nome, sobrenome, telefone, preferências de notificação). | JWT (Usuário) |
 | `PUT` | `/me/password` | Altera a senha do usuário. | JWT (Usuário) |
 | `DELETE` | `/me` | Exclui (desativa) a conta do usuário e todos os seus dados associados. | JWT (Usuário) |
 | `POST` | `/me/change-email` | Inicia o processo de alteração de e-mail. | JWT (Usuário) |
@@ -114,7 +114,7 @@ Endpoints para gerenciar as caixas d'água associadas a um usuário.
 | `GET` | `/{id}` | Retorna os detalhes completos de uma caixa d'água específica. | JWT (Usuário) |
 | `GET` | `/{id}/analise` | Retorna uma análise de consumo para um período (`?inicio` e `?fim`). | JWT (Usuário) |
 | `POST` | `/parear-dispositivo` | Associa (pareia) um novo dispositivo de hardware a uma conta de usuário. | JWT (Usuário) |
-| `PUT` | `/{id}` | Atualiza as informações de uma caixa d'água (nome, capacidade, metas, frequência, limite de alerta). | JWT (Usuário) |
+| `PUT` | `/{id}` | Atualiza as informações de uma caixa d'água (nome, capacidade, metas, frequência de atualização, limite percentual para lançar alerta). | JWT (Usuário) |
 | `DELETE` | `/{id}` | Exclui (desativa) uma caixa d'água. | JWT (Usuário) |
 
 
