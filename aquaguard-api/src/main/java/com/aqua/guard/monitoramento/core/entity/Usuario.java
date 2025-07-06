@@ -9,7 +9,6 @@ import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,8 +29,11 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "nome_completo", nullable = false)
-    private String nomeCompleto;
+    @Column(name = "nome", nullable = false)
+    private String nome;
+
+    @Column(name = "sobrenome")
+    private String sobrenome;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -56,14 +58,27 @@ public class Usuario implements UserDetails {
     @Column(name = "verification_code_expires_at")
     private LocalDateTime verificationCodeExpiresAt;
 
+    @Column(name = "notificacoes_email_ativas")
+    private boolean notificacoesEmailAtivas = true;
+
+    @Column(name = "notificacoes_push_ativas")
+    private boolean notificacoesPushAtivas = true;
+
     private boolean ativo = false;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CaixaDAgua> caixasDAgua;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DispositivoUsuario> dispositivos;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public String getNomeCompleto() {
+        return this.nome + (this.sobrenome != null ? " " + this.sobrenome : "");
     }
 
     @Override
@@ -97,7 +112,7 @@ public class Usuario implements UserDetails {
     }
 
     public Usuario(CadastroUsuarioDTO dados, String senhaHasheada) {
-        this.nomeCompleto = dados.nomeCompleto();
+        this.dividirEDefinirNomeCompleto(dados.nomeCompleto());
         this.email = dados.email();
         this.telefone = dados.telefone();
         this.senha = senhaHasheada;
@@ -105,7 +120,7 @@ public class Usuario implements UserDetails {
     }
 
     public void atualizarDadosDeNovoRegistro(CadastroUsuarioDTO dados, String novaSenhaHasheada) {
-        this.nomeCompleto = dados.nomeCompleto();
+        this.dividirEDefinirNomeCompleto(dados.nomeCompleto());
         this.telefone = dados.telefone();
         this.senha = novaSenhaHasheada;
         this.ativo = false;
@@ -118,11 +133,20 @@ public class Usuario implements UserDetails {
     }
 
     public void atualizarPerfil(AtualizacaoPerfilDTO dados) {
-        if (dados.nomeCompleto() != null && !dados.nomeCompleto().isBlank()) {
-            this.nomeCompleto = dados.nomeCompleto();
+        if (dados.nome() != null && !dados.nome().isBlank()) {
+            this.nome = dados.nome();
+        }
+        if (dados.sobrenome() != null) {
+            this.sobrenome = dados.sobrenome();
         }
         if (dados.telefone() != null) {
             this.telefone = dados.telefone();
+        }
+        if (dados.notificacoesEmailAtivas() != null) {
+            this.notificacoesEmailAtivas = dados.notificacoesEmailAtivas();
+        }
+        if (dados.notificacoesPushAtivas() != null) {
+            this.notificacoesPushAtivas = dados.notificacoesPushAtivas();
         }
     }
 
@@ -154,6 +178,19 @@ public class Usuario implements UserDetails {
         this.pendingEmail = null;
         this.emailChangeCode = null;
         this.emailChangeCodeExpiresAt = null;
+    }
+
+    private void dividirEDefinirNomeCompleto(String nomeCompleto) {
+        if (nomeCompleto == null || nomeCompleto.isBlank()) {
+            return;
+        }
+        String[] partesNome = nomeCompleto.trim().split("\\s+", 2);
+        this.nome = partesNome[0];
+        if (partesNome.length > 1) {
+            this.sobrenome = partesNome[1];
+        } else {
+            this.sobrenome = null;
+        }
     }
 
 }
