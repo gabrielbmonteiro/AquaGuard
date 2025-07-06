@@ -6,10 +6,6 @@ import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
-/**
- * DTO (Data Transfer Object) para receber os dados de cadastro de uma nova Caixa D'Água.
- * Usado no corpo da requisição POST. A anotação @Valid no controller aciona estas validações.
- */
 public record CadastroCaixaDAguaDTO(
         @NotBlank
         String nome,

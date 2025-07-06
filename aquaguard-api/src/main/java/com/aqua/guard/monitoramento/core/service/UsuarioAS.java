@@ -1,6 +1,7 @@
 package com.aqua.guard.monitoramento.core.service;
 
 import com.aqua.guard.monitoramento.api.v1.dto.*;
+import com.aqua.guard.monitoramento.core.entity.CaixaDAgua;
 import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class UsuarioAS {
 
     @Autowired
     private UsuarioEC repository;
+
+    @Autowired
+    private CaixaDAguaAS caixaDAguaAS;
 
     @Autowired
     private EmailAS emailAS;
@@ -38,18 +42,23 @@ public class UsuarioAS {
                 throw new IllegalStateException("O email fornecido já está em uso.");
             }
 
+            caixaDAguaAS.excluirPermanentementePorUsuario(usuarioExistente);
             usuarioExistente.atualizarDadosDeNovoRegistro(dados, senhaHasheada);
             usuarioParaSalvar = usuarioExistente;
         } else {
             usuarioParaSalvar = new Usuario(dados, senhaHasheada);
         }
 
-        String codigo = String.format("%06d", random.nextInt(999999));
+        String codigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime dataExpiracao = LocalDateTime.now().plusMinutes(10);
 
         usuarioParaSalvar.definirCodigoDeVerificacao(codigo, dataExpiracao);
 
-        emailAS.sendVerificationCode(usuarioParaSalvar.getEmail(), codigo);
+        // --- MUDANÇA TEMPORARIA - P/ TESTES ---
+        usuarioParaSalvar.ativarConta(); // Apagar linha após testes!
+        // emailAS.sendVerificationCode(usuarioParaSalvar.getEmail(), codigo); // Descomentar linha após testes!
+        // --------------------------------------
+
         return repository.save(usuarioParaSalvar);
     }
 
@@ -61,7 +70,7 @@ public class UsuarioAS {
             throw new IllegalStateException("Esta conta já foi ativada.");
         }
 
-        String novoCodigo = String.format("%06d", random.nextInt(999999));
+        String novoCodigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime novaDataExpiracao = LocalDateTime.now().plusMinutes(10); // Expira em 10 minutos
 
         usuario.definirCodigoDeVerificacao(novoCodigo, novaDataExpiracao);
@@ -90,6 +99,7 @@ public class UsuarioAS {
     }
 
     public void excluirConta(Usuario usuario) {
+        caixaDAguaAS.excluirTodasPorUsuario(usuario);
         repository.delete(usuario);
     }
 
@@ -118,7 +128,7 @@ public class UsuarioAS {
             throw new IllegalStateException("O novo e-mail fornecido já está em uso por outra conta.");
         }
 
-        String codigo = String.format("%06d", random.nextInt(999999));
+        String codigo = String.format("%04d", random.nextInt(9999));
         LocalDateTime dataExpiracao = LocalDateTime.now().plusMinutes(10);
 
         usuario.definirCodigoDeMudancaDeEmail(dados.novoEmail(), codigo, dataExpiracao);

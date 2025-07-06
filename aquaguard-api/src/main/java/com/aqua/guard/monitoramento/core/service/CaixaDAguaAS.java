@@ -28,6 +28,9 @@ public class CaixaDAguaAS {
     private CaixaDAguaEC caixaDAguaEC;
 
     @Autowired
+    private LeituraAS leituraAS;
+
+    @Autowired
     private LeituraVolumeEC leituraRepository;
 
     public CaixaDAgua parearDispositivo(PareamentoDispositivoDTO dados, Usuario usuario) {
@@ -51,7 +54,27 @@ public class CaixaDAguaAS {
     @Transactional
     public void excluir(UUID id, Usuario usuarioAutenticado) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
+        leituraAS.excluirTodasPorCaixas(List.of(caixa));
         caixaDAguaEC.delete(caixa);
+    }
+
+    @Transactional
+    public void excluirTodasPorUsuario(Usuario usuario) {
+        List<CaixaDAgua> caixasDoUsuario = caixaDAguaEC.findAllByUsuario(usuario);
+
+        for (CaixaDAgua caixa : caixasDoUsuario) {
+            this.excluir(caixa.getId(), usuario);
+        }
+    }
+
+    @Transactional
+    public void excluirPermanentementePorUsuario(Usuario usuario) {
+        List<CaixaDAgua> caixasDoUsuario = caixaDAguaEC.findAllByUsuarioIgnoringWhere(usuario);
+
+        if (!caixasDoUsuario.isEmpty()) {
+            leituraAS.excluirTodasPorCaixas(caixasDoUsuario);
+            caixaDAguaEC.deleteAllInBatch(caixasDoUsuario);
+        }
     }
 
     public List<DetalhamentoCaixaDAguaDTO> listar(Usuario usuarioAutenticado) {
@@ -94,9 +117,12 @@ public class CaixaDAguaAS {
         return new AnaliseCaixaDAguaDTO(consumoMedio, picoDeConsumo, previsaoEsvaziamento, pontosGrafico);
     }
 
-    /**
-     * Valida se o usuário tem permissão para acessar a caixa d'água e a retorna.
-     */
+    @Transactional
+    public void registrarEnvioAlertaNivelBaixo(CaixaDAgua caixa) {
+        caixa.setDataUltimoAlertaNivelBaixo(LocalDateTime.now());
+        caixaDAguaEC.save(caixa);
+    }
+
     private CaixaDAgua validarAcessoUsuario(UUID id, Usuario usuarioAutenticado) {
         var caixa = caixaDAguaEC.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Caixa d'água não encontrada."));
@@ -108,18 +134,12 @@ public class CaixaDAguaAS {
         return caixa;
     }
 
-    /**
-     * Mapeia a lista de entidades LeituraVolume para uma lista de pontos para o gráfico.
-     */
     private List<AnaliseCaixaDAguaDTO.PontoGrafico> mapearLeiturasParaGrafico(List<LeituraVolume> leituras) {
         return leituras.stream()
                 .map(l -> new AnaliseCaixaDAguaDTO.PontoGrafico(l.getDataHoraLeitura(), l.getVolumeLitros()))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Calcula o consumo médio diário com base nas leituras do período.
-     */
     private BigDecimal calcularConsumoMedio(List<LeituraVolume> leituras, LocalDateTime inicio, LocalDateTime fim) {
         BigDecimal consumoTotal = leituras.get(0).getVolumeLitros().subtract(leituras.get(leituras.size() - 1).getVolumeLitros());
         long dias = Duration.between(inicio, fim).toDays();
@@ -128,9 +148,6 @@ public class CaixaDAguaAS {
         return consumoTotal.divide(BigDecimal.valueOf(dias), 2, RoundingMode.HALF_UP);
     }
 
-    /**
-     * Encontra a maior queda de volume entre duas leituras consecutivas.
-     */
     private BigDecimal calcularPicoDeConsumo(List<LeituraVolume> leituras) {
         BigDecimal picoDeConsumo = BigDecimal.ZERO;
         for (int i = 1; i < leituras.size(); i++) {
@@ -143,13 +160,11 @@ public class CaixaDAguaAS {
         return picoDeConsumo;
     }
 
-    /**
-     * Estima o número de dias restantes com base no consumo médio.
-     */
     private String calcularPrevisaoEsvaziamento(BigDecimal volumeAtual, BigDecimal consumoMedio) {
         if (consumoMedio.compareTo(BigDecimal.ZERO) <= 0) {
             return "Consumo zerado";
         }
+
         BigDecimal diasRestantesDecimal = volumeAtual.divide(consumoMedio, 2, RoundingMode.HALF_UP);
 
         if (diasRestantesDecimal.compareTo(BigDecimal.ONE) >= 0) {

@@ -6,10 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * DTO para devolver informações detalhadas de uma Caixa D'Água para o cliente.
- * Usado como corpo da resposta em requisições GET e no retorno de um POST bem-sucedido.
- */
 public record DetalhamentoCaixaDAguaDTO(
         UUID id,
         String nome,

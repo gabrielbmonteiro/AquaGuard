@@ -1,5 +1,6 @@
 package com.aqua.guard.monitoramento.core.service;
 
+import com.aqua.guard.monitoramento.api.exception.InvalidTokenException;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -45,7 +46,7 @@ public class TokenAS {
                     .verify(tokenJWT)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Token JWT inválido ou expirado!");
+            throw new InvalidTokenException("Token JWT inválido ou expirado!");
         }
     }
 
