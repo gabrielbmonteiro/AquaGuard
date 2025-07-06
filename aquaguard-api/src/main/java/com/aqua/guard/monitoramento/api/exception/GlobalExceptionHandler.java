@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
                 Instant.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Erro Interno do Servidor",
-                "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                "Ocorreu um erro inesperado. Cheque o log da aplicação.",
                 request.getRequestURI()
         );
 
@@ -114,6 +114,19 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return new ResponseEntity<>(errorDTO, HttpStatus.CONFLICT);
+    }
+
+    // Handler para erros de token JWT
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidToken(InvalidTokenException ex, HttpServletRequest request) {
+        var errorDTO = new ErrorResponseDTO(
+                Instant.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                "Token Inválido",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
     }
 
 }

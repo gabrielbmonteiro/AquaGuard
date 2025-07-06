@@ -1,5 +1,6 @@
 package com.aqua.guard.monitoramento.api.filter;
 
+import com.aqua.guard.monitoramento.api.exception.InvalidTokenException;
 import com.aqua.guard.monitoramento.core.service.TokenAS;
 import com.aqua.guard.monitoramento.core.persistence.UsuarioEC;
 import jakarta.servlet.FilterChain;
@@ -7,8 +8,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,23 +26,32 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UsuarioEC usuarioEC;
 
+    @Autowired
+    @Qualifier("customAuthenticationEntryPoint")
+    private AuthenticationEntryPoint authEntryPoint;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        var tokenJWT = recuperarToken(request);
+        try {
+            var tokenJWT = recuperarToken(request);
 
-        if (tokenJWT != null) {
-            var subject = tokenAS.getSubject(tokenJWT);
-            var usuario = usuarioEC.findByEmail(subject).orElse(null);
+            if (tokenJWT != null) {
+                var subject = tokenAS.getSubject(tokenJWT);
+                var usuario = usuarioEC.findByEmail(subject).orElse(null);
 
-            if (usuario != null) {
-                var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (usuario != null) {
+                    var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (InvalidTokenException e) {
+            authEntryPoint.commence(request, response, e);
+        }
     }
 
     private String recuperarToken(HttpServletRequest request) {
