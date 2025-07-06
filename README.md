@@ -140,5 +140,5 @@ Endpoint para o embarcado enviar os dados de medição.
 
 ## Autores
 
-- **Gabriel Batista Monteiro** - *Desenvolvimento Backend* - [gabrielbmonteiro](https://github.com/gabrielbmonteiro)
-- **Leonardo Alves Braz** - *Desenvolvimento do Sistema Embarcado* - [Leonardobrzz](https://github.com/Leonardobrzz)
+- **Gabriel Batista Monteiro** - *Backend e Prototipação* - [gabrielbmonteiro](https://github.com/gabrielbmonteiro)
+- **Leonardo Alves Braz** - *Frontend e Embarcado* - [Leonardobrzz](https://github.com/Leonardobrzz)
