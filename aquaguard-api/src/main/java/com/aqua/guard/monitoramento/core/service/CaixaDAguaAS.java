@@ -117,6 +117,12 @@ public class CaixaDAguaAS {
         return new AnaliseCaixaDAguaDTO(consumoMedio, picoDeConsumo, previsaoEsvaziamento, pontosGrafico);
     }
 
+    @Transactional
+    public void registrarEnvioAlertaNivelBaixo(CaixaDAgua caixa) {
+        caixa.setDataUltimoAlertaNivelBaixo(LocalDateTime.now());
+        caixaDAguaEC.save(caixa);
+    }
+
     private CaixaDAgua validarAcessoUsuario(UUID id, Usuario usuarioAutenticado) {
         var caixa = caixaDAguaEC.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Caixa d'água não encontrada."));

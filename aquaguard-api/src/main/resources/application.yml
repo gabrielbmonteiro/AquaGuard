@@ -24,3 +24,7 @@ api:
       token:
           secret: ${JWT_SECRET}
           expiration-hours: 2
+
+aquaguard:
+  firebase:
+    service-account-file-path: firebase/serviceAccountKey.json

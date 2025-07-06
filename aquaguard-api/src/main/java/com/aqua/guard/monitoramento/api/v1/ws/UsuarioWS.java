@@ -2,6 +2,7 @@ package com.aqua.guard.monitoramento.api.v1.ws;
 
 import com.aqua.guard.monitoramento.api.v1.dto.*;
 import com.aqua.guard.monitoramento.core.entity.Usuario;
+import com.aqua.guard.monitoramento.core.service.DispositivoUsuarioAS;
 import com.aqua.guard.monitoramento.core.service.UsuarioAS;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UsuarioWS {
 
     @Autowired
     private UsuarioAS usuarioAS;
+
+    @Autowired
+    private DispositivoUsuarioAS dispositivoUsuarioAS;
 
     @GetMapping("/me")
     public ResponseEntity<DetalhamentoUsuarioDTO> getMyProfile(@AuthenticationPrincipal Usuario usuarioAutenticado) {
@@ -65,6 +69,16 @@ public class UsuarioWS {
     public ResponseEntity<Void> excluirMinhaConta(@AuthenticationPrincipal Usuario usuarioAutenticado) {
         usuarioAS.excluirConta(usuarioAutenticado);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/devices")
+    @Transactional
+    public ResponseEntity<Void> registrarDispositivo(
+            @AuthenticationPrincipal Usuario usuarioAutenticado,
+            @RequestBody @Valid RegistroDispositivoDTO dados) {
+
+        dispositivoUsuarioAS.registrarDispositivo(usuarioAutenticado, dados.pushToken());
+        return ResponseEntity.ok().build();
     }
 
 }
