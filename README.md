@@ -42,7 +42,7 @@ O AquaGuard é composto por dois projetos principais que trabalham em conjunto:
 2.  **Sistema Embarcado:** O cérebro do hardware. Este projeto contém o firmware para o microcontrolador que realiza a medição do volume de água e se comunica de forma segura com a nossa API.
     - **Confira o repositório do sistema embarcado:** `(https://github.com/Leonardobrzz/Water-Level-Monitoring)`
 
-## 🛠️ Tecnologias Utilizadas (Backend)
+## 🛠️ Tecnologias Utilizadas
 
 - **Linguagem:** Java 21
 - **Framework:** Spring Boot 3
