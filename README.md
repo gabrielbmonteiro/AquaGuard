@@ -126,7 +126,7 @@ Endpoint para o embarcado obter suas configurações iniciais.
 
 | Método HTTP | Endpoint | Descrição | Autenticação |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/configuracao/{serialNumber}` | Retorna a chave de API, a URL de report e frequência de report (em segundos) | Pública |
+| `GET` | `/configuracao/{serialNumber}` | Retorna a frequência de report (em segundos) | HMAC (Dispositivo) |
 
 ---
 
@@ -136,7 +136,7 @@ Endpoint para o embarcado enviar os dados de medição.
 
 | Método HTTP | Endpoint | Descrição | Autenticação |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/` | Registra uma nova leitura de volume. | API Key (Dispositivo) |
+| `POST` | `/` | Registra uma nova leitura de volume. | HMAC (Dispositivo) |
 
 ## Autores
 
