@@ -35,7 +35,7 @@ public class EmailAS {
         }
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("alerta@aquaguard.com");
+        message.setFrom("hello@demomailtrap.co");
         message.setTo(usuario.getEmail());
         message.setSubject("AquaGuard - Alerta de Nível Baixo!");
 
