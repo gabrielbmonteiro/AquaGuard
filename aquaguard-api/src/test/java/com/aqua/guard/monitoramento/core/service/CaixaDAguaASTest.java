@@ -82,7 +82,7 @@ class CaixaDAguaASTest {
         AnaliseCaixaDAguaDTO resultado = caixaDAguaAS.analisarConsumo(idCaixa, usuarioAutenticado, inicio, fim);
 
         assertNotNull(resultado);
-        assertEquals(new BigDecimal("75.00"), resultado.consumoMedioDiario());
+        assertEquals(new BigDecimal("75.00"), resultado.consumoMedio());
         assertEquals(new BigDecimal("100.00"), resultado.picoDeConsumo());
         assertEquals("Aproximadamente 11 dias restantes.", resultado.previsaoEsvaziamento());
         assertEquals(3, resultado.pontosDoGrafico().size());
@@ -206,7 +206,7 @@ class CaixaDAguaASTest {
         AnaliseCaixaDAguaDTO resultado = caixaDAguaAS.analisarConsumo(idCaixa, usuarioAutenticado, inicio, fim);
 
         assertEquals("Dados insuficientes", resultado.previsaoEsvaziamento());
-        assertEquals(BigDecimal.ZERO, resultado.consumoMedioDiario());
+        assertEquals(BigDecimal.ZERO, resultado.consumoMedio());
         assertTrue(resultado.pontosDoGrafico().isEmpty());
     }
 
@@ -226,7 +226,7 @@ class CaixaDAguaASTest {
 
         AnaliseCaixaDAguaDTO resultado = caixaDAguaAS.analisarConsumo(idCaixa, usuarioAutenticado, inicio, fim);
 
-        assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), resultado.consumoMedioDiario());
+        assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), resultado.consumoMedio());
         assertEquals("Consumo zerado", resultado.previsaoEsvaziamento());
     }
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record AnaliseCaixaDAguaDTO(
-        BigDecimal consumoMedioDiario,
+        BigDecimal consumoMedio,
         BigDecimal picoDeConsumo,
         String previsaoEsvaziamento,
         List<PontoGrafico> pontosDoGrafico
