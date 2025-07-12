@@ -28,7 +28,7 @@ public class CaixaDAgua {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 

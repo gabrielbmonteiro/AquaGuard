@@ -18,7 +18,7 @@ public class ProvisionamentoAS {
 
         int intervaloEmSegundos = caixa.getFrequenciaAtualizacao().getMinutos() * 60;
 
-        return new ConfiguracaoDispositivoDTO(caixa.getChaveApi(), "/api/v1/leituras", intervaloEmSegundos);
+        return new ConfiguracaoDispositivoDTO(intervaloEmSegundos);
     }
 
 }
