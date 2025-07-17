@@ -54,7 +54,6 @@ public class CaixaDAguaAS {
     @Transactional
     public void excluir(UUID id, Usuario usuarioAutenticado) {
         var caixa = validarAcessoUsuario(id, usuarioAutenticado);
-        leituraAS.excluirTodasPorCaixas(List.of(caixa));
         caixaDAguaEC.delete(caixa);
     }
 
@@ -72,7 +71,6 @@ public class CaixaDAguaAS {
         List<CaixaDAgua> caixasDoUsuario = caixaDAguaEC.findAllByUsuarioIgnoringWhere(usuario);
 
         if (!caixasDoUsuario.isEmpty()) {
-            leituraAS.excluirTodasPorCaixas(caixasDoUsuario);
             caixaDAguaEC.deleteAllInBatch(caixasDoUsuario);
         }
     }
