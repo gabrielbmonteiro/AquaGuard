@@ -1,0 +1,6 @@
+com\aqua\guard\monitoramento\ApiApplicationTests.class
+com\aqua\guard\monitoramento\core\service\CaixaDAguaASTest.class
+com\aqua\guard\monitoramento\security\WithMockAquaGuardUser.class
+com\aqua\guard\monitoramento\api\v1\ws\CaixaDAguaWSTest.class
+com\aqua\guard\monitoramento\core\service\LeituraASTest.class
+com\aqua\guard\monitoramento\security\WithMockAquaGuardUserSecurityContextFactory.class
