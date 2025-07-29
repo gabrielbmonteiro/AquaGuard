@@ -138,6 +138,197 @@ Endpoint para o embarcado enviar os dados de medição.
 | :--- | :--- | :--- | :--- |
 | `POST` | `/` | Registra uma nova leitura de volume. | HMAC (Dispositivo) |
 
+### 🏠 Dashboard
+- Visualização em tempo real do nível das caixas
+- Cards informativos com status e alertas
+- Gráficos de consumo rápido
+- Acesso rápido às funcionalidades principais
+
+### 🪣 Gerenciamento de Caixas
+- Listagem de todas as caixas cadastradas
+- Detalhes completos de cada caixa
+- Configuração de metas e alertas
+- Histórico de leituras
+
+### 📊 Analytics
+- Gráficos detalhados de consumo
+- Análise por períodos (7d, 30d, 90d)
+- Identificação de padrões e tendências
+- Relatórios de economia
+
+### 👤 Perfil do Usuário
+- Gerenciamento de dados pessoais
+- Configurações de notificação
+- Alteração de senha e email
+- Logout seguro
+
+### 🔐 Autenticação
+- Login e cadastro seguros
+- Verificação por email
+- Recuperação de senha
+- Tokens JWT para segurança
+
+## 🛠️ Tecnologias
+
+- **React Native 0.79.5** - Framework mobile
+- **Expo 53** - Plataforma de desenvolvimento
+- **TypeScript 5.8.3** - Linguagem tipada
+- **Expo Router 5.1.4** - Navegação baseada em arquivos
+- **Axios 1.10.0** - Cliente HTTP
+- **AsyncStorage** - Armazenamento local
+- **Expo Vector Icons** - Ícones
+- **Linear Gradient** - Gradientes visuais
+
+## 🚀 Como Executar
+
+### 📋 Pré-requisitos
+- Node.js 18+ e npm/yarn
+- Expo CLI (`npm install -g @expo/cli`)
+- Expo Go app no celular
+- Backend API rodando
+
+### 🏁 Instalação
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/seu-usuario/AquaGuard.git
+   cd AquaGuard/aquaguard-mobile-new
+   ```
+
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure a API:**
+   - Edite `services/apiConfig.ts`
+   - Altere o IP no `BASE_URL` para o da sua máquina:
+   ```typescript
+   DEVELOPMENT: {
+     BASE_URL: 'http://SEU_IP:8080/api/v1',
+     TIMEOUT: 10000
+   }
+   ```
+
+4. **Execute o aplicativo:**
+   ```bash
+   npx expo start
+   ```
+
+5. **Escaneie o QR Code** com o Expo Go no seu celular
+
+## 📁 Estrutura do Projeto
+
+```
+aquaguard-mobile-new/
+├── app/                    # Telas da aplicação (Expo Router)
+│   ├── (auth)/            # Telas de autenticação
+│   │   ├── login.tsx      # Tela de login
+│   │   ├── register.tsx   # Tela de cadastro
+│   │   └── verify.tsx     # Verificação de email
+│   ├── (tabs)/            # Telas principais (tabs)
+│   │   ├── index.tsx      # Dashboard
+│   │   ├── tanks.tsx      # Caixas d'água
+│   │   ├── analytics.tsx  # Análise/relatórios
+│   │   └── profile.tsx    # Perfil do usuário
+│   └── _layout.tsx        # Layout raiz
+├── services/              # Serviços e APIs
+│   ├── apiConfig.ts       # Configuração da API
+│   ├── authService.ts     # Serviços de autenticação
+│   └── tankService.ts     # Serviços das caixas
+├── hooks/                 # Hooks personalizados
+│   └── useAuthCheck.ts    # Hook de verificação de auth
+├── components/            # Componentes reutilizáveis
+└── assets/               # Imagens e recursos
+```
+
+## 🔧 Configuração
+
+### Modos de Operação
+
+O app possui 3 modos configuráveis em `services/apiConfig.ts`:
+
+1. **DEVELOPMENT** - Conecta com backend local
+2. **MOCK** - Usa dados fictícios (para testes)
+3. **PRODUCTION** - Conecta com servidor de produção
+
+### Configurações de API
+
+```typescript
+export const API_CONFIG = {
+  DEVELOPMENT: {
+    BASE_URL: 'http://192.168.1.9:8080/api/v1',
+    TIMEOUT: 10000
+  },
+  MOCK: {
+    BASE_URL: 'http://localhost:8080/api/v1',
+    TIMEOUT: 10000
+  },
+  PRODUCTION: {
+    BASE_URL: 'https://your-production-server.com/api/v1',
+    TIMEOUT: 15000
+  }
+};
+```
+
+## 📱 Telas do App
+
+### 🔐 Autenticação
+- **Login** - Entrada com email e senha
+- **Cadastro** - Registro de novo usuário
+- **Verificação** - Confirmação por código de email
+
+### 🏠 Área Logada
+- **Dashboard** - Visão geral e acesso rápido
+- **Caixas** - Listagem e detalhes das caixas
+- **Analytics** - Gráficos e análises
+- **Perfil** - Configurações do usuário
+
+## 🔒 Segurança
+
+- **JWT Tokens** - Autenticação segura
+- **AsyncStorage** - Armazenamento local criptografado
+- **Interceptors** - Renovação automática de tokens
+- **Logout Automático** - Em caso de token expirado
+
+## 🐛 Troubleshooting
+
+### Problemas Comuns
+
+1. **Erro de conexão com API:**
+   - Verifique se o backend está rodando
+   - Confirme o IP correto no `apiConfig.ts`
+   - Teste a conectividade de rede
+
+2. **App não carrega após login:**
+   - Limpe o AsyncStorage
+   - Reinicie o Expo
+   - Verifique os logs do console
+
+3. **Problemas de navegação:**
+   - Reinicie o Expo Dev Client
+   - Limpe o cache: `npx expo r -c`
+
+### Comandos Úteis
+
+```bash
+# Limpar cache
+npx expo r -c
+
+# Executar em modo desenvolvimento
+npx expo start --dev-client
+
+# Ver logs detalhados
+npx expo start --verbose
+
+# Executar diretamente no Android
+npx expo run:android
+
+# Executar diretamente no iOS
+npx expo run:ios
+```
+
+
 ## Autores
 
 - **Gabriel Batista Monteiro** - *Backend e Prototipação* - [gabrielbmonteiro](https://github.com/gabrielbmonteiro)
