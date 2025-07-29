@@ -1,0 +1,36 @@
+spring:
+  application:
+      name: api
+  profiles:
+      active: dev  # Ativar perfil dev para banco persistente
+  datasource:
+      url: ${DB_URL}
+      username: ${DB_USER}
+      password: ${DB_PASS}
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username: ${MAILTRAP_API_USER}
+    password: ${MAILTRAP_API_TOKEN}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
+
+server:
+  address: 0.0.0.0  # Aceita conexões de qualquer IP
+  port: 8080
+
+api:
+  security:
+      token:
+          secret: ${JWT_SECRET}
+          expiration-hours: 2
+
+aquaguard:
+  firebase:
+    service-account-file-path: firebase/serviceAccountKey.json
